@@ -123,9 +123,7 @@ socio.hangup(callSession)
           isMuted : false,
           isOnHold : false,
           callSession: null,
-          sociomile: null,
-            //  statusText: '',
-            //  statusTextEl: document.getElementById('statusText')
+          sociomile: null
         }),
         mounted() {
           
@@ -138,10 +136,8 @@ socio.hangup(callSession)
             })
             
             this.sociomile.on('sociomileEvent',function (event) {
-              console.log('sociomileEvent', event)
               var el = document.getElementById('statusText')
               el.prepend(`(${event.event_group})`+event.type + ' => ' + event.message+'\n');
-              // self.statusText += event.type + ' => ' + event.message+'\n'
 
               if(event.event_group === 'ended' || event.event_group === 'failed'){
                 self.isDial = false
@@ -152,28 +148,18 @@ socio.hangup(callSession)
               if(event.event_group === 'authentication'){
                 self.isAuth = event.data.authenticated
               }
-              // status_text.prepend(event.message+'\n')
-              //     if(event.authenticated){
-                      
-              //     }
             })
             this.sociomile.start()
           },
           dial(){
-            // console.log(this.sociomile)
             this.callSession = this.sociomile.dial(this.phoneNumber)
             if(this.callSession){
                 this.isDial = true
                 this.callSession.connection.addEventListener('track', (e) => {
-                  console.log('stream', e)
                     const audi = new Audio()
                     audi.srcObject = e.streams[0]
                     audi.play()
                 })
-                // sess.on('callEvent',function (event) {
-                //     status_text.prepend(event.type+' => '+event.text+'\n')
-                //     console.log('callEvent', event)
-                // })
             }
           },
           hangup () {
