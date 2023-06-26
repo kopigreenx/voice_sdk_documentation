@@ -42,7 +42,7 @@
             <button class="btn btn-primary" @click="connect" type="button" :disabled="isAuth && isRegistered">Connect</button>
           </div>  
         </div>
-        <hr class="col-1 my-4" v-if="isAuth && isRegistered">
+        <hr class="col-12 my-4" v-if="isAuth && isRegistered">
         <div class="input-group" v-if="isAuth && isRegistered">
           <span class="input-group-text">Phone number</span>
           <input type="text" aria-label="number" class="form-control" v-model="phoneNumber" :disabled="isDial">
@@ -50,9 +50,19 @@
         <button href="javascript:void(0)" @click="hangup" class="btn btn-danger" :disabled="!isDial || !isAuth || !isRegistered">Hangup</button>
         </div>  
         
-        <hr class="col-1 my-4">
+        <hr class="col-12 my-4">
         <textarea id="statusText" rows="5" class="form-control"></textarea>
-        <h4>Init Configuration</h4>
+        <hr class="col-12 my-4">
+        <div class="accordion" id="accordionExample">
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                Init Configuration (instance)
+              </button>
+            </h2>
+            <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+              <div class="accordion-body">
+                <h4>Init Configuration</h4>
         <pre>
 <code class="language-javascript">
 // Initial Configuration
@@ -68,7 +78,18 @@ socio.on('sociomileEvent', (event) => {
 socio.start();
 </code>
       </pre>
-<h4>Make a call</h4>
+              </div>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                Make a call
+              </button>
+            </h2>
+            <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+              <div class="accordion-body">
+                <h4>Make a call</h4>
       <pre>
 <code class="language-javascript">
 // DIAL
@@ -87,7 +108,18 @@ const callSession = socio.dial('phoneNumber')
   }
 </code>
       </pre>
-<h4>Hangup a call</h4>
+              </div>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                Hangup call
+              </button>
+            </h2>
+            <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+              <div class="accordion-body">
+                <h4>Hangup a call</h4>
       <pre>
 <code class="language-javascript">
 // HANGUP
@@ -97,6 +129,13 @@ const callSession = socio.dial('phoneNumber')
 socio.hangup(callSession)
 </code>
       </pre>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+
+
       </div>
 
       </div>
@@ -142,7 +181,7 @@ socio.hangup(callSession)
               if(event.event_group === 'ended' || event.event_group === 'failed'){
                 self.isDial = false
               }
-              if(event.event_group === 'registered'){
+              if(event.event_name === 'on_registered'){
                 self.isRegistered = true
               }
               if(event.event_group === 'authentication'){
