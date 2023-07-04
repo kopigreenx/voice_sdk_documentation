@@ -8,4 +8,4 @@
 
 - Simple and lightweight
 
-[Get Started](quickstart)
+[Get Started](README)
