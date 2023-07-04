@@ -2,9 +2,6 @@
 <!-- div:title-panel -->
 # demo
 
-```markdown
-Good {{ timeOfDay }}!
-```
 ```iframe
 height="600"
 width="100%"
