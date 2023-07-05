@@ -84,38 +84,6 @@
   const session = this.sociomile.dial('082xxxxxx','',{})
   this.sociomile.unhold(session)
 ```
-
-```js
-{
-  computed: {
-    timeOfDay() {
-      const date = new Date();
-      const hours = date.getHours();
-
-      if (hours < 12) {
-        return 'morning';
-      }
-      else if (hours < 18) {
-        return 'afternoon';
-      }
-      else {
-        return 'evening'
-      }
-    }
-  },
-}
-```
-
-```markdown
-Good {{ timeOfDay }}!
-```
-
-<output data-lang="output">
-<div id="demo">
-Good {{ message }}!
-</div>
-
-</output>
 <!-- panels:end -->
 
 
