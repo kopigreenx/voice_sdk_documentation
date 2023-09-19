@@ -252,26 +252,49 @@ this.sociomile.on('sociomileEvent',function (event) {
 
 #### **Structure**
 
-```text
-└── event_group
-    └── event_name
+
+```js
+  {
+  "type": "",
+  "event_group": "",
+  "event_name": "",
+  "message": "",
+  "data": {}
+  }
 ```
 
 #### **Events**
 
-```text
+<!-- ```text
+└──softphone_event
+   └──register
+      ├──on_registered          => Process connecting telephony system
+      ├──on_unregistered        => successfully connected telephony system
+      ├──on_registrationFailed  => failed registered to telephony sytem
+      ├──on_connecting          => will fire when connection issue
+      ├──on_connected           => will fire when wrong credential on backend
+      └──on_disconnected        => will fire when connection issue
+    └──progress
+       ├──on_newRTCSession
+    └──session
+       ├──on_session_progress
+       ├──on_session_accepted
+       ├──on_session_confirmed
+       ├──on_session_ended
+       └──on_session_failed
+
 
 └── authentication
     ├── on_auth_success       => success authentication will fire when has valid endpoint & secret key
     └── on_auth_failed        => failed authentication will fire when secret key or endpoint not valid
 
 └── register
-    ├── on_connecting         => Process connecting telephony system
-    ├── on_connected          => successfully connected telephony system
-    ├── on_registered         => successfully registered to telephony sytem
-    ├── on_unregistered       => will fire when connection issue
-    ├── on_registrationFailed => will fire when wrong credential on backend
-    └── on_disconnected       => will fire when connection issue
+    ├── on_connecting         
+    ├── on_connected          
+    ├── on_registered         
+    ├── on_unregistered       
+    ├── on_registrationFailed 
+    └── on_disconnected       
 
 └── progress
     ├── on_initiate_failed    => will fire when authentication failed and still want to dial
@@ -304,8 +327,86 @@ this.sociomile.on('sociomileEvent',function (event) {
 └── ended
     ├── on_remote_ended       => call ended by customer
     └── on_local_ended        => call ended by agent
-```
+``` -->
+```text
+type: 'auth',
+    event_group: 'authentication'
+        event_name: 'on_checking_auth'            => Fired when SDK init
+        event_name: 'on_auth_success'             => Fired when authentication succesfully
+        event_name: 'on_auth_failed'              => Fired when authentication failed
 
+type: 'websockets'
+    event_group: 'socket'
+        event_name: 'on_socket_error'             => Fired when socket error cause connection / unauthorized
+        event_name: 'on_socket_connecting'        => Fired when socket connecting state
+        event_name: 'on_socket_connected'         => Fired when socket succesfully connected
+        event_name: 'on_socket_disconnected'      => Fired when socket disconnected cause internet connection
+
+type: 'softphone_event'
+    event_group: 'register'
+        event_name: 'on_connecting'               => Fired for each transport connection attempt.
+        event_name: 'on_registered'               => Fired for a successfull registration.
+        event_name: 'on_unregistered'             => Fired for an unregistration. This event is fired in the following 
+        event_name: 'on_registrationFailed'       => Fired for a registration failure.
+        event_name: 'on_connected'                => Fired when the transport connection is established.
+        event_name: 'on_disconnected'             => Fired when the transport connection attempt (or automatic re-attempt) fails.
+    event_group: 'progress'
+        event_name: 'on_newRTCSession'            => Fired for an incoming or outgoing session/call.
+    event_group: 'session'
+        event_name: 'on_session_progress'         => Fired when receiving or generating a 1XX SIP class response
+        event_name: 'on_session_accepted'         => Fired when the call is accepted
+        event_name: 'on_session_confirmed'        => Fired when the call is confirmed
+        event_name: 'on_session_ended'            => Fired when an established call ends.
+        event_name: 'on_session_failed'           => Fired when the session was unable to establish.
+        
+type: 'outbound_event'
+    event_group: 'progress'
+        event_name: 'on_initiate_failed'
+        event_name: 'on_connecting'               => Fired after the local media stream is added
+        event_name: 'on_sending'                  => Fired just before the initial INVITE is sent
+        event_name: 'on_progress'                 => Fired when receiving or generating
+        event_name: 'on_initiate_failed'          => Fired when required condition not complete.
+        event_name: 'on_initiate_success'         => Fired when required condition complete.
+    event_group: 'failed'
+        event_name: 'on_rejected'                 => Fired when call hangup by customer before call established
+        event_name: 'on_cancelled'                => Fired when call hangup by agent before call established
+    event_group: 'ended'
+        event_name: 'on_remote_ended'             => Fired when call hangup by customer after call established
+        event_name: 'on_local_ended'              => Fired when call hangup by agent after call established
+    event_group: 'established'
+        event_name: 'on_accepted'                 => Fired when call accepted in local
+        event_name: 'on_confirmed'                => Fired when call confirmed in remote
+    event_group: 'muted'
+        event_name: 'start_muted'                 => Fired when call muted
+        event_name: 'end_mute'                    => Fired when call muted
+    event_group: 'hold'
+        event_name: 'on_start_hold'               => Fired when call hold
+        event_name: 'on_end_hold'                 => Fired when call unhold
+
+type: 'inbound_event'
+    event_group: 'agent_state'
+        event_name: 'on_agent_login_initiated'    => Fired when agent started agentReady function
+        event_name: 'on_agent_login_success'      => Fired when agent agentReady success
+        event_name: 'on_agent_already_login'      => Fired when run agentReady function more than once         
+        event_name: 'on_agent_login_failed'       => Fired when failed ready cause any condition
+        event_name: 'on_agent_logout_initiated'   => Fired when agentUnready function started
+        event_name: 'on_agent_logout_success'     => Fired when agentUnready function success
+        event_name: 'on_agent_already_logout'     => Fired when agent started agentReady function
+    event_group: 'agent_link'
+        event_name: 'on_agent_call_linked'        => Fired when there is an incoming call to the agent
+        event_name: 'on_agent_call_unlinked'      => Fired when there is an incoming call to the agent is terminated by the agent /customer
+    event_group: 'agent_break'    
+        event_name: 'on_fetch_breaks'             => Fired when showBreaks function running
+        event_name: 'on_fetch_breaks_success'     => Fired when showBreaks function successfully load
+        event_name: 'on_begin_break_started'      => fired when start begin break
+        event_name: 'on_begin_break_success'      => Fired when beginBreak function successfully running
+        event_name: 'on_begin_break_error'        => Fired when beginBreak function error cause any condition        
+        event_name: 'on_end_break_started'        => fired when start end break
+        event_name: 'on_end_break_success'        => Fired when endBreak function successfully running
+        event_name: 'on_already_break'            => Fired when beginBreak function running twice
+        event_name: 'on_already_end_break'        => fired when already ended break
+
+```
 <!-- tabs:end -->
 
 

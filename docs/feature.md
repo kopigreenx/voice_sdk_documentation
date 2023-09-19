@@ -2,6 +2,11 @@
 # Avalaible Feature
 ## Instance function
 <!-- panels:start -->
+```js 
+  this.sociomile = new SocioVoice.Init({
+    base_url:`${self.endPoint}`,secret_key:`${self.secretKey}`
+  })
+```
 <!-- div:title-panel -->
 ### Dial / make new call session
 <!-- div:left-panel -->
