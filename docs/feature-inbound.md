@@ -22,7 +22,7 @@
 <!-- div:title-panel -->
 ### Agent Unready
 <!-- div:left-panel -->
-`agentUnready()` Terminate agent from receive incoming call.
+`agentUnready()` Unready agent become offline.
 <!-- div:right-panel -->
 
 ```js
@@ -32,7 +32,7 @@
 <!-- div:title-panel -->
 ### Show list break
 <!-- div:left-panel -->
-`showBreaks()` Terminate agent from receive incoming call.
+`showBreaks()` Fetch list breaks options.
 <!-- div:right-panel -->
 
 ```js
@@ -42,21 +42,31 @@
 <!-- div:title-panel -->
 ### Agent Begin break
 <!-- div:left-panel -->
-`beginBreak()` Terminate agent from receive incoming call.
+`beginBreak(idBreak)` Begin break based on break selected ID.
 <!-- div:right-panel -->
 
 ```js
-  this.sociomile.beginBreak()
+  this.sociomile.beginBreak(idBreak)
 ```
 
 <!-- div:title-panel -->
 ### Ended break
 <!-- div:left-panel -->
-`endBreak()` Terminate agent from receive incoming call.
+`endBreak()` End break agent become available.
 <!-- div:right-panel -->
 
 ```js
   this.sociomile.endBreak()
+```
+
+<!-- div:title-panel -->
+### Hangup incoming call
+<!-- div:left-panel -->
+`iHangup()` Terminate agent from receive incoming call.
+<!-- div:right-panel -->
+
+```js
+  this.sociomile.iHangup()
 ```
 
 
