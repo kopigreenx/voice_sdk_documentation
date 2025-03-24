@@ -230,7 +230,7 @@ socio.hangup(callSession)
                 } else {
                   if(event.event_name === 'on_registered'){
                     self.isRegistered = true
-                    self.sociomile.agentReady()                    
+                    // self.sociomile.agentReady()                    
                   }
                   if(event.event_name === 'on_disconnected'){
                     self.isRegistered = false
