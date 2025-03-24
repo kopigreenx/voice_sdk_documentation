@@ -46,42 +46,127 @@
           <input type="text" aria-label="number" class="form-control" v-model="phoneNumber" :disabled="isDial">
           <button href="javascript:void(0)" @click="dial" class="btn btn-primary" :disabled="isDial || !isAuth || !isRegistered">Dial</button>
           <button href="javascript:void(0)" @click="isReady ? agentUnready() : readyAgent()" class="btn btn-primary" :disabled="isDial || !isAuth || !isRegistered">{{ isReady ? 'Unready' : 'Ready'}}</button>
+          <button href="javascript:void(0)" @click="isReady && inboundCallConnected && isOnHoldInbound ? unholdInbound() : holdInbound()" class="btn btn-primary" :disabled="isDial || !isAuth || !isRegistered || !inboundCallConnected">{{ inboundCallConnected && isOnHoldInbound ? 'Unhold Inbound' : 'Hold Inbound'}}</button>
           
           <button href="javascript:void(0)" @click="showBreaks" class="btn btn-secondary" :disabled="isDial || !isAuth || !isRegistered">show breaks</button>
           <button href="javascript:void(0)" @click="startBreak" class="btn btn-secondary" :disabled="isDial || !isAuth || !isRegistered">Start breaks</button>
           <button href="javascript:void(0)" @click="endBreak" class="btn btn-secondary" :disabled="isDial || !isAuth || !isRegistered">End breaks</button>
+          <button href="javascript:void(0)" @click="answerCall" class="btn btn-secondary" :disabled="isDial || !isAuth || !isRegistered">Answer Call</button>
 
           <button href="javascript:void(0)" @click="hangup" class="btn btn-danger" :disabled="!isDial || !isAuth || !isRegistered">Hangup</button>
-          <button href="javascript:void(0)" @click="iHangup" class="btn btn-danger" :disabled="!incomingCall || !isAuth || !isRegistered">Hangup incoming</button>
+          <button href="javascript:void(0)" @click="iHangup" class="btn btn-danger" :disabled="!inboundCallConnected || !isAuth || !isRegistered">Hangup incoming</button>
 
-          <button href="javascript:void(0)" @click="muteUnmute" class="btn btn-outline-success" :disabled="!callConnected">{{ isMuted ? 'Unmute' : 'Mute'}}</button>
-          <button href="javascript:void(0)" @click="holdUnhold" class="btn btn-outline-warning" :disabled="!callConnected">{{ isOnHold ? 'Unhold' : 'Hold'}}</button>
-          <button href="javascript:void(0)" @click="holdUnholdInbound" class="btn btn-outline-warning" :disabled="!incomingCall || !isAuth || !isRegistered">{{ isOnHold ? 'Unhold Inbound' : 'Hold Inbound'}}</button>
+          <button href="javascript:void(0)" @click="muteUnmute" class="btn btn-outline-success" >{{ isMuted ? 'Unmute' : 'Mute'}}</button>
+          <button href="javascript:void(0)" @click="holdUnhold" class="btn btn-outline-warning" :disabled="!callConnected || !inboundCallConnected">{{ isOnHold ? 'Unhold' : 'Hold'}}</button>
+          <button href="javascript:void(0)" @click="sentCsat" class="btn btn-outline-warning" :disabled="!inboundCallConnected || !isAuth || !isRegistered">CSAT</button>
         </div>  
         
         <hr class="col-12 my-4">
         <textarea id="statusText" rows="5" class="form-control"></textarea>
         <hr class="col-12 my-4">
+        <div class="accordion" id="accordionExample">
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                Init Configuration (instance)
+              </button>
+            </h2>
+            <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+              <div class="accordion-body">
+                <h4>Init Configuration</h4>
+        <pre>
+<code class="language-javascript">
+// Initial Configuration
+const socio = new SocioVoice.Init({
+  base_url:'endpoint',
+  secret_key:'secret_key'
+});
+// Start listen event
+socio.on('sociomileEvent', (event) => {
+  // event => []
+});
+// run sociomile
+socio.start();
+</code>
+      </pre>
+              </div>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                Make a call
+              </button>
+            </h2>
+            <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+              <div class="accordion-body">
+                <h4>Make a call</h4>
+      <pre>
+<code class="language-javascript">
+// DIAL
+// will create session call
+// save session into variable / state 
+// for hangup a call 
+const callSession = socio.dial('phoneNumber')
+  if(callSession){
+      callSession.connection.addEventListener('track', (e) => {
+          // element audio can use any format
+          // you can used html audio element / HTMLAudioElement => const audio = new Audio
+          const audi = new Audio()
+          audi.srcObject = e.streams[0]
+          audi.play()
+      })
+  }
+</code>
+      </pre>
+              </div>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                Hangup call
+              </button>
+            </h2>
+            <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+              <div class="accordion-body">
+                <h4>Hangup a call</h4>
+      <pre>
+<code class="language-javascript">
+// HANGUP
+// this function require sociomile instance & call session
+// socio => instance 
+// callSession => session call
+socio.hangup(callSession)
+</code>
+      </pre>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+
+
       </div>
 
       </div>
     </div>
-    <script src='./sociomileVoice-2.0.2.min.js'></script>
+    <script src='./sociomileVoice-2.0.31h.min.js'></script>
     <script src="https://cdn.jsdelivr.net/combine/npm/vue@2.6.10,npm/vue-i18n@8.21.0/dist/vue-i18n.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@editorjs/editorjs@latest"></script>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/9000.0.1/prism.min.js" integrity="sha512-UOoJElONeUNzQbbKQbjldDf9MwOHqxNz49NNJJ1d90yp+X9edsHyJoAs6O4K19CZGaIdjI5ohK+O2y5lBTW6uQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/9000.0.1/components/prism-javascript.min.js" integrity="sha512-yvw5BDA/GQu8umskpIOBhX2pDLrdOiriaK4kVxtD28QEGLV5rscmCfDjkrx52tIgzLgwzs1FsALV6eYDpGnEkQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="https://momentjs.com/downloads/moment.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.30.1/moment.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     
 
     <script type="module">
       new Vue({
         el: "#app",
         data: () => ({
-          endPoint: '',
-          secretKey: '',
+          endPoint: 'jne-sdk-voice.sociomile.app.test',
+          secretKey: 'tUCGEVuoZJYEveT1UcMsMdzDBXtL5YEi0Yotj6m8',
           phoneNumber: '',
           isAuth: false,
           isRegistered: false,
@@ -89,12 +174,14 @@
           callConnected : false,
           isMuted : false,
           isOnHold : false,
-          isOnHoldIn : false,
           callSession: null,
+          callSessionIncoming: null,
           isReady: false,
           isBreak: false,
           sociomile: null,
+          inboundCallConnected: false,
           incomingCall: false,
+          isOnHoldInbound: false,
           audi: new Audio()
         }),
         mounted() {
@@ -115,21 +202,46 @@
                 if(event.event_group === 'ended' || event.event_group === 'failed'){
                   self.isDial = false
                   self.callConnected = false
+                  self.incomingCall = false
                 }
               }
               
               if(event.type==='softphone_event'){
-                if(event.event_name === 'on_registered'){
-                  self.isRegistered = true
-                }
-                if(event.event_name === 'on_disconnected'){
-                  self.isRegistered = false
-                }
-                if(event.event_name === 'on_accepted'){
-                  self.callConnected = true
-                }
-                if(event.event_name === 'on_session_ended'){
-                  self.isReady = false
+                // SESSION INCOMING CALL DIRECT SOFTPHONE
+                if(event.event_group==='session_incoming'){
+                  if(event.event_name === 'on_incoming_call'){
+                    self.callSessionIncoming = event.data.session
+                    self.incomingCall = true
+                  }
+                  if(event.event_name === 'on_accepted'){
+                    self.callConnected = true
+                  }
+                  if(event.event_name === 'on_session_confirmed'){
+                    self.callConnected = true
+                  }
+                  if(event.event_name === 'on_session_failed'){
+                    self.callConnected = false
+                    self.isDial = false
+                  }
+                  if(event.event_name === 'on_session_ended'){
+                    self.callSessionIncoming = null
+                    self.isDial = false
+                  }
+                } else {
+                  if(event.event_name === 'on_registered'){
+                    self.isRegistered = true
+                    self.sociomile.agentReady()                    
+                  }
+                  if(event.event_name === 'on_disconnected'){
+                    self.isRegistered = false
+                  }
+                  if(event.event_name === 'on_accepted'){
+                    self.callConnected = true
+                  }
+                  if(event.event_name === 'on_session_ended'){
+                    self.isReady = false
+                    self.isDial = false
+                  }
                 }
               }
 
@@ -150,12 +262,19 @@
                 }
                 if(event.event_name === 'on_agent_call_linked'){
                   // console.log('sociomileEvent on_agent_login_success', event)
-                  self.incomingCall = true
+                  self.inboundCallConnected = true
                 }
               }
               
             })
             this.sociomile.start()
+          },
+          async answerCall(){
+            this.sociomile.answerCall()
+            this.isDial = true
+          },
+          async rejectCall(){
+            this.sociomile.rejectCall()
           },
           async dial(){
             var self = this
@@ -185,19 +304,43 @@
             this.sociomile.endBreak()
           },
           hangup () {
-            this.sociomile.hangup(this.callSession)
+            if(this.callSessionIncoming){
+              this.sociomile.hangup(this.callSessionIncoming)
+            } else{
+              this.sociomile.hangup(this.callSession)
+            }
             this.isDial = false
           },
           iHangup () {
             this.sociomile.iHangup()
-            this.incomingCall = false
+            this.inboundCallConnected = false
+          },
+          sentCsat () {
+            this.sociomile.sentCsat(8801);
+            this.inboundCallConnected = false
+          },
+          async holdInbound () {
+            await this.sociomile.holdInbound()
+            this.isOnHoldInbound = true
+          },
+          async unholdInbound () {
+            await this.sociomile.unholdInbound()
+            this.isOnHoldInbound = false
           },
           muteUnmute () {
             if(this.isMuted){
-              this.sociomile.unmute(this.callSession)
+              if(this.isReady){
+                this.sociomile.unmute()
+              }else{
+                this.sociomile.unmute(this.callSession)
+              }
               this.isMuted = false
             } else {
-              this.sociomile.mute(this.callSession)
+              if(this.isReady){
+                this.sociomile.mute()
+              }else{
+                this.sociomile.mute(this.callSession) 
+              }
               this.isMuted = true
             }
           },
@@ -208,15 +351,6 @@
             } else {
               this.sociomile.hold(this.callSession)
               this.isOnHold = true
-            }
-          },
-          holdUnholdInbound () {
-            if(this.isOnHoldIn){
-              this.sociomile.endHold()
-              this.isOnHoldIn = false
-            } else {
-              this.sociomile.beginHold()
-              this.isOnHoldIn = true
             }
           }
         },
