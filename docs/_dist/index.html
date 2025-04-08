@@ -35,8 +35,9 @@
         <div class="bd-example-snippet bd-code-snippet"><div class="bd-example m-0 border-0">
           <div class="input-group">
             <span class="input-group-text">Endpoint & Secret Key</span>
-            <input type="text" aria-label="Endpoint" class="form-control" v-model="endPoint">
-            <input type="text" aria-label="Secret Key" class="form-control" v-model="secretKey">
+            <input type="text" aria-label="Endpoint" class="form-control" placeholder="domain" v-model="endPoint">
+            <input type="text" aria-label="Secret Key" class="form-control" placeholder="secret key" v-model="secretKey">
+            <input type="text" aria-label="Secret Key" class="form-control" placeholder="webhook uri" v-model="webhookUri">
             <button class="btn btn-primary" @click="connect" type="button" :disabled="isAuth && isRegistered">Connect</button>
           </div>  
         </div>
@@ -167,6 +168,7 @@ socio.hangup(callSession)
         data: () => ({
           endPoint: '',
           secretKey: '',
+          webhookUri: '',
           phoneNumber: '',
           isAuth: false,
           isRegistered: false,
@@ -191,7 +193,7 @@ socio.hangup(callSession)
           connect(){
             var self = this
             this.sociomile = new SocioVoice.Init({
-                base_url:`${self.endPoint}`,secret_key:`${self.secretKey}`
+                base_url:`${self.endPoint}`,secret_key:`${self.secretKey}`,webhook_uri:`${self.webhookUri}`
             })
             
             this.sociomile.on('sociomileEvent',function (event) {
